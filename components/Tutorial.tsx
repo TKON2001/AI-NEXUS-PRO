@@ -21,19 +21,15 @@ const tutorialSteps = [
     content: 'Bắt đầu bằng cách nhập câu hỏi hoặc yêu cầu của bạn vào ô văn bản lớn. Bạn có thể nhấn Enter (không Shift) để gửi.',
   },
   {
-    title: 'Bước 3: Chế độ So sánh',
-    content: 'Chế độ mặc định này cho phép bạn gửi cùng một truy vấn đến nhiều mô hình AI. Chọn các mô hình bạn muốn so sánh và xem kết quả của chúng cạnh nhau.',
+    title: 'Bước 3: So sánh các Mô hình',
+    content: 'Ứng dụng cho phép bạn gửi cùng một truy vấn đến nhiều mô hình AI. Chọn các mô hình bạn muốn so sánh và xem kết quả của chúng cạnh nhau.',
   },
   {
-    title: 'Bước 4: Chế độ Nâng cao',
-    content: 'Chuyển sang chế độ này để thực hiện các tác vụ phức tạp. Bạn có thể để AI tự động chọn mô hình tốt nhất ("Định tuyến") hoặc bắt đầu một cuộc "Tranh luận" giữa các AI để có câu trả lời sâu sắc hơn.',
-  },
-  {
-    title: 'Bước 5: Phân tích Kết quả',
+    title: 'Bước 4: Phân tích Kết quả',
     content: 'Sau khi có kết quả, đừng quên chấm sao để đánh giá chất lượng. Việc này sẽ giúp tạo ra biểu đồ Radar trực quan hóa hiệu suất của các mô hình.',
   },
   {
-    title: 'Bước 6: Xem lại Lịch sử',
+    title: 'Bước 5: Xem lại Lịch sử',
     content: 'Mọi kết quả của bạn sẽ được lưu tự động. Nhấp vào nút "Lịch sử & Phân tích" để xem lại, sắp xếp, và thậm chí xuất dữ liệu ra file CSV.',
   },
   {

@@ -9,8 +9,8 @@ interface ApiKeysContextType {
 
 const ApiKeysContext = createContext<ApiKeysContextType | undefined>(undefined);
 
+// FIX: Removed 'gemini' from initial state to comply with @google/genai guidelines.
 const initialKeys: ApiKeys = {
-  gemini: '',
   openai: '',
   deepseek: '',
 };
@@ -19,7 +19,15 @@ export const ApiKeysProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [apiKeys, setApiKeys] = useState<ApiKeys>(() => {
     try {
       const storedKeys = window.localStorage.getItem('aiNexusApiKeys');
-      return storedKeys ? JSON.parse(storedKeys) : initialKeys;
+      if (storedKeys) {
+        const parsed = JSON.parse(storedKeys);
+        // FIX: Ensure that we only use keys defined in the new ApiKeys type to avoid stale data.
+        return {
+          openai: parsed.openai || '',
+          deepseek: parsed.deepseek || '',
+        };
+      }
+      return initialKeys;
     } catch (error) {
       console.error("Failed to parse API keys from localStorage", error);
       return initialKeys;

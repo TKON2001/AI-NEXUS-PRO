@@ -1,4 +1,3 @@
-
 export interface Model {
   id: string;
   name: string;
@@ -31,25 +30,20 @@ export interface HistoryEntry extends BenchmarkData {
   quality: number;
 }
 
+export interface ApiKeys {
+  openai: string;
+  deepseek: string;
+}
+
+// FIX: Add missing type definitions to resolve compilation errors.
 export type AppMode = 'comparison' | 'advanced';
 export type Priority = 'quality' | 'cost' | 'speed';
 export type TaskMode = 'routing' | 'debate';
-
 export interface AdvancedResult {
-  status: 'progress' | 'completed';
-  progress: string[];
-  finalResponse: string;
   model?: Model;
+  finalResponse: string;
   time?: number;
   cost?: number;
-  tokens?: {
-    input: number;
-    output: number;
-  };
-}
-
-export interface ApiKeys {
-  gemini: string;
-  openai: string;
-  deepseek: string;
+  tokens?: { input: number; output: number };
+  progress: string[];
 }

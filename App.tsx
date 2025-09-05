@@ -4,14 +4,11 @@ import { PromptInput } from './components/PromptInput';
 import { ModelSelector } from './components/ModelSelector';
 import { ResponseColumn } from './components/ResponseColumn';
 import { HistoryModal } from './components/HistoryModal';
-import { ModeSwitcher } from './components/ModeSwitcher';
-import { AdvancedModeDashboard } from './components/AutoSelectDashboard';
 import { Welcome } from './components/Welcome';
 import { RadarChart } from './components/RadarChart';
-import { AdvancedModeResult } from './components/AdvancedModeResult';
-import { getAiResponseStream, getAutoRoutedResponseStream, getDebateAndSynthesisResponseStream } from './services/aiService';
+import { getAiResponseStream } from './services/aiService';
 import { MODELS } from './constants';
-import type { HistoryEntry, AppMode, Priority, BenchmarkResult, Model, BenchmarkData, TaskMode, AdvancedResult } from './types';
+import type { HistoryEntry, BenchmarkResult, Model, BenchmarkData } from './types';
 import { BrainCircuitIcon, HistoryIcon, InformationCircleIcon, Cog6ToothIcon } from './components/Icons';
 import { Tutorial } from './components/Tutorial';
 import { ApiKeyModal } from './components/ApiKeyModal';
@@ -32,12 +29,6 @@ const App: React.FC = () => {
     }
   });
   const [isHistoryVisible, setIsHistoryVisible] = useState<boolean>(false);
-  const [appMode, setAppMode] = useState<AppMode>('comparison');
-  
-  // Advanced Mode State
-  const [taskMode, setTaskMode] = useState<TaskMode>('routing');
-  const [priority, setPriority] = useState<Priority>('quality');
-  const [advancedResult, setAdvancedResult] = useState<AdvancedResult | null>(null);
   
   const [showWelcome, setShowWelcome] = useState(true);
 
@@ -73,154 +64,67 @@ const App: React.FC = () => {
 
     setIsLoading(true);
     setResults({});
-    setAdvancedResult(null);
     setShowWelcome(false);
 
     const submissionId = Date.now();
     const newHistoryEntries: Record<string, HistoryEntry> = {};
 
-    if (appMode === 'comparison') {
-      const modelsToQuery = MODELS.filter(m => selectedModels.includes(m.id));
-      
-      const initialResults: Record<string, BenchmarkResult> = {};
-      modelsToQuery.forEach(m => {
-        initialResults[m.id] = { status: 'loading' };
-      });
-      setResults(initialResults);
+    const modelsToQuery = MODELS.filter(m => selectedModels.includes(m.id));
+    
+    const initialResults: Record<string, BenchmarkResult> = {};
+    modelsToQuery.forEach(m => {
+      initialResults[m.id] = { status: 'loading' };
+    });
+    setResults(initialResults);
 
-      await Promise.all(
-        modelsToQuery.map(async (model) => {
+    await Promise.all(
+      modelsToQuery.map(async (model) => {
+        
+        const onChunk = (chunk: string) => {
+          setResults(prev => {
+            const currentResult = prev[model.id];
+            let existingResponse = '';
+            if (currentResult?.status === 'completed') {
+                existingResponse = currentResult.response;
+            } else if (currentResult?.status === 'error') {
+                // If we start getting chunks, it means the error was transient. Clear it.
+                existingResponse = '';
+            }
+            
+            return {
+               ...prev,
+              [model.id]: {
+                status: 'completed',
+                model: model,
+                response: existingResponse + chunk,
+                time: 0, cost: 0, tokens: { input: 0, output: 0 }
+              }
+            }
+          });
+        };
+        
+        try {
+          const result = await getAiResponseStream(prompt, model, apiKeys, onChunk);
           
-          const onChunk = (chunk: string) => {
-            setResults(prev => {
-              const currentResult = prev[model.id];
-              let existingResponse = '';
-              if (currentResult?.status === 'completed') {
-                  existingResponse = currentResult.response;
-              } else if (currentResult?.status === 'error') {
-                  // If we start getting chunks, it means the error was transient. Clear it.
-                  existingResponse = '';
-              }
-              
-              return {
-                 ...prev,
-                [model.id]: {
-                  status: 'completed',
-                  model: model,
-                  response: existingResponse + chunk,
-                  time: 0, cost: 0, tokens: { input: 0, output: 0 }
-                }
-              }
-            });
+          const finalEntry = {
+            id: `${submissionId}-${model.id}`,
+            submissionId,
+            prompt,
+            ...result,
+            quality: 0
           };
           
-          try {
-            const result = await getAiResponseStream(prompt, model, apiKeys, onChunk);
-            
-            const finalEntry = {
-              id: `${submissionId}-${model.id}`,
-              submissionId,
-              prompt,
-              ...result,
-              quality: 0
-            };
-            
-            newHistoryEntries[model.id] = finalEntry;
-            setResults(prev => ({ ...prev, [model.id]: { status: 'completed', ...result } }));
-          } catch (error) {
-            const message = error instanceof Error ? error.message : "Đã xảy ra lỗi không xác định.";
-            setResults(prev => ({ ...prev, [model.id]: { status: 'error', message } }));
-          }
-        })
-      );
-      setHistory(prev => [...Object.values(newHistoryEntries), ...prev]);
-
-    } else { // 'advanced' mode
-        if (taskMode === 'routing') {
-            const onChunk = (chunk: string, model: Model, reason: string) => {
-                 setAdvancedResult(prev => {
-                    const newProgress = prev?.progress?.includes(reason) ? prev.progress : [...(prev?.progress || []), reason];
-                    return {
-                        ...prev,
-                        status: 'progress',
-                        finalResponse: (prev?.finalResponse || '') + chunk,
-                        progress: newProgress,
-                        model: model,
-                    } as AdvancedResult;
-                });
-            };
-            try {
-              const result = await getAutoRoutedResponseStream(prompt, priority, apiKeys, onChunk);
-              const finalEntry = {
-                  id: `${submissionId}-${result.model.id}`,
-                  submissionId,
-                  prompt,
-                  ...result,
-                  quality: 0
-              };
-              setAdvancedResult(prev => ({
-                  ...(prev!),
-                  status: 'completed',
-                  finalResponse: result.response,
-                  time: result.time,
-                  cost: result.cost,
-                  tokens: result.tokens,
-              }));
-              setHistory(prev => [finalEntry, ...prev]);
-            } catch(error) {
-                const message = error instanceof Error ? error.message : "Đã xảy ra lỗi không xác định.";
-                setAdvancedResult({ status: 'completed', progress: ['Lỗi!'], finalResponse: message });
-            }
-
-        } else if (taskMode === 'debate') {
-             setAdvancedResult({ status: 'progress', progress: [], finalResponse: '' });
-             const onUpdate = (update: Partial<AdvancedResult>) => {
-                setAdvancedResult(prev => {
-                    const existingProgress = prev?.progress || [];
-                    const newProgress = update.progress || [];
-                    const combinedProgress = [...existingProgress, ...newProgress].filter((v, i, a) => a.indexOf(v) === i);
-                    
-                    return {
-                        status: update.status || prev?.status || 'progress',
-                        progress: combinedProgress,
-                        finalResponse: update.finalResponse !== undefined ? update.finalResponse : (prev?.finalResponse || ''),
-                        model: update.model || prev?.model,
-                        time: update.time !== undefined ? update.time : prev?.time,
-                        cost: update.cost !== undefined ? update.cost : prev?.cost,
-                        tokens: update.tokens || prev?.tokens,
-                    };
-                });
-            };
-            try {
-              const finalResult = await getDebateAndSynthesisResponseStream(prompt, apiKeys, onUpdate);
-              const finalEntry: HistoryEntry = {
-                  id: `${submissionId}-debate`,
-                  submissionId,
-                  prompt,
-                  ...finalResult,
-                  quality: 0,
-              };
-              
-              setAdvancedResult(prev => ({
-                ...prev!,
-                status: 'completed',
-                progress: prev?.progress.filter(p => !p.includes('...')) || ['Hoàn thành!'],
-                finalResponse: finalResult.response,
-                model: finalEntry.model,
-                time: finalResult.time,
-                cost: finalResult.cost,
-                tokens: finalResult.tokens,
-              }));
-              setHistory(prev => [finalEntry, ...prev]);
-            } catch(error) {
-               const message = error instanceof Error ? error.message : "Đã xảy ra lỗi không xác định.";
-               setAdvancedResult({ status: 'completed', progress: ['Lỗi!'], finalResponse: message });
-            }
+          newHistoryEntries[model.id] = finalEntry;
+          setResults(prev => ({ ...prev, [model.id]: { status: 'completed', ...result } }));
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Đã xảy ra lỗi không xác định.";
+          setResults(prev => ({ ...prev, [model.id]: { status: 'error', message } }));
         }
-    }
-
+      })
+    );
+    setHistory(prev => [...Object.values(newHistoryEntries), ...prev]);
     setIsLoading(false);
-  }, [prompt, isLoading, appMode, selectedModels, priority, taskMode, apiKeys]);
+  }, [prompt, isLoading, selectedModels, apiKeys]);
   
   const handleQualityChange = (id: string, newQuality: number) => {
     setHistory(prevHistory =>
@@ -272,9 +176,7 @@ const App: React.FC = () => {
       <main className="flex-grow flex flex-col gap-6">
         <div className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
           <div className="flex flex-col md:flex-row gap-4 mb-4">
-            <ModeSwitcher mode={appMode} setMode={setAppMode} />
-            {appMode === 'comparison' && <ModelSelector models={MODELS} selected={selectedModels} onChange={setSelectedModels} />}
-            {appMode === 'advanced' && <AdvancedModeDashboard priority={priority} setPriority={setPriority} taskMode={taskMode} setTaskMode={setTaskMode} />}
+            <ModelSelector models={MODELS} selected={selectedModels} onChange={setSelectedModels} />
           </div>
           <PromptInput
             prompt={prompt}
@@ -286,7 +188,7 @@ const App: React.FC = () => {
         
         {showWelcome && <Welcome />}
 
-        {appMode === 'comparison' && !showWelcome && (
+        {!showWelcome && (
           <div className="flex flex-col gap-6">
             <div className="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-6">
               {MODELS.filter(m => selectedModels.includes(m.id)).map((model: Model) => (
@@ -311,22 +213,6 @@ const App: React.FC = () => {
                      <h2 className="text-xl font-bold text-center mb-4">Phân tích Hiệu suất Trực quan</h2>
                     <RadarChart results={completedComparisonResults} history={history}/>
                 </div>
-            )}
-          </div>
-        )}
-        
-        {appMode === 'advanced' && !showWelcome && (
-          <div className="flex-grow">
-            {(isLoading && !advancedResult) && (
-               <div className="flex flex-col items-center justify-center h-full bg-gray-800 rounded-xl p-6 border border-gray-700">
-                 <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4 animate-spin border-t-cyan-400"></div>
-                 <p className="text-lg">AI đang thực hiện tác vụ nâng cao...</p>
-               </div>
-            )}
-            {advancedResult && (
-              <div className="bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-700">
-                <AdvancedModeResult result={advancedResult} isLoading={isLoading}/>
-              </div>
             )}
           </div>
         )}

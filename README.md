@@ -1,3 +1,4 @@
+
 # AI Nexus: So sánh & Định tuyến LLM
 
 AI Nexus là một công cụ so sánh hiệu năng mạnh mẽ để đối chiếu phản hồi của các LLM cạnh nhau cùng với phân tích hiệu suất. Tích hợp hệ thống định tuyến thông minh để tự động chọn mô hình tốt nhất cho một truy vấn dựa trên ưu tiên của người dùng như chi phí, tốc độ, hoặc chất lượng.
@@ -7,9 +8,6 @@ AI Nexus là một công cụ so sánh hiệu năng mạnh mẽ để đối chi
 *   **So sánh song song:** Gửi một truy vấn đến nhiều mô hình (Gemini, GPT-4o, DeepSeek Coder) và xem kết quả trong thời gian thực.
 *   **Phân tích Hiệu suất:** Tự động theo dõi thời gian phản hồi, chi phí ước tính và số lượng token cho mỗi phản hồi.
 *   **Trực quan hóa Dữ liệu:** Biểu đồ Radar để so sánh trực quan hiệu suất của các mô hình dựa trên tốc độ, chi phí, chất lượng và độ ngắn gọn.
-*   **Chế độ Nâng cao:**
-    *   **Định tuyến Thông minh:** Tự động chọn mô hình phù hợp nhất dựa trên mục đích truy vấn (lập trình, sáng tạo, v.v.) và ưu tiên của bạn.
-    *   **Tranh luận & Tổng hợp AI:** Một quy trình đa bước trong đó các AI "tranh luận" và một mô hình cuối cùng tổng hợp câu trả lời chất lượng cao nhất.
 *   **Quản lý API Key:** Giao diện an toàn để bạn nhập và quản lý các khóa API của riêng mình (lưu trữ cục bộ trên trình duyệt).
 *   **Lịch sử & Xuất dữ liệu:** Tất cả các truy vấn đều được lưu lại và có thể được xuất ra file CSV để phân tích thêm.
 
