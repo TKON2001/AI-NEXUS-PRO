@@ -38,7 +38,20 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isVisible, onClose }) 
           <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-700 transition-colors"><XMarkIcon className="h-6 w-6" /></button>
         </header>
         <div className="p-6 space-y-4">
-          {/* FIX: Removed Google Gemini API Key input to comply with @google/genai guidelines. */}
+          <div>
+            <label htmlFor="gemini-key" className="block mb-2 text-sm font-medium text-gray-300">
+              Google Gemini API Key (Gemini 2.5 Flash)
+            </label>
+            <input
+              type="password"
+              id="gemini-key"
+              name="gemini"
+              value={localKeys.gemini}
+              onChange={handleInputChange}
+              className="bg-gray-700 border border-gray-600 text-gray-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5"
+              placeholder="Nhập khóa API của bạn"
+            />
+          </div>
           <div>
             <label htmlFor="openai-key" className="block mb-2 text-sm font-medium text-gray-300">
               OpenAI API Key (GPT-4o, v.v...)

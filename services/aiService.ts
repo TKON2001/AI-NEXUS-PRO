@@ -28,6 +28,9 @@ const getOpenAICompatibleResponseStream = async (
   prompt: string,
   onChunk: (chunk: string) => void
 ): Promise<string> => {
+    if (!apiKey) {
+        throw new Error(`Khóa API cho ${modelId} chưa được cung cấp. Vui lòng thêm vào cài đặt.`);
+    }
     const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -81,18 +84,19 @@ const getOpenAICompatibleResponseStream = async (
     return responseText;
 };
 
-
 // --- GOOGLE GEMINI API STREAMING ---
 
-// FIX: Updated to use process.env.API_KEY as per @google/genai guidelines.
 const getGoogleResponseStream = async (
     prompt: string,
     model: Model,
+    apiKey: string,
     onChunk: (chunk: string) => void
 ): Promise<string> => {
-    // FIX: API key is sourced directly from process.env.API_KEY, and its availability is assumed as per guidelines.
+    if (!apiKey) {
+        throw new Error("Khóa API của Google Gemini chưa được cung cấp. Vui lòng thêm vào cài đặt.");
+    }
     let responseText = '';
-    const genAI = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+    const genAI = new GoogleGenAI({ apiKey });
     const result = await genAI.models.generateContentStream({ model: model.id, contents: prompt });
 
     for await (const chunk of result) {
@@ -119,8 +123,7 @@ export const getAiResponseStream = async (
     try {
         switch (model.provider) {
             case 'Google':
-                // FIX: Removed apiKeys.gemini argument as it's no longer needed.
-                responseText = await getGoogleResponseStream(prompt, model, onChunk);
+                responseText = await getGoogleResponseStream(prompt, model, apiKeys.gemini, onChunk);
                 break;
             case 'OpenAI':
                 responseText = await getOpenAICompatibleResponseStream('https://api.openai.com/v1/chat/completions', apiKeys.openai, model.id, prompt, onChunk);

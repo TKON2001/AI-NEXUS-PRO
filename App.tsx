@@ -1,4 +1,5 @@
 
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { PromptInput } from './components/PromptInput';
 import { ModelSelector } from './components/ModelSelector';
@@ -55,7 +56,8 @@ const App: React.FC = () => {
   }, [history]);
   
   const completedComparisonResults = Object.values(results)
-      .filter(r => r.status === 'completed')
+      // FIX: Cast `r` to `BenchmarkResult` to address a type inference issue where `r` was treated as `unknown`.
+      .filter(r => (r as BenchmarkResult)?.status === 'completed')
       .map(r => r as BenchmarkData);
 
 

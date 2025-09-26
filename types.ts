@@ -33,6 +33,7 @@ export interface HistoryEntry extends BenchmarkData {
 export interface ApiKeys {
   openai: string;
   deepseek: string;
+  gemini: string;
 }
 
 // FIX: Add AppMode type export to resolve import error in ModeSwitcher.tsx

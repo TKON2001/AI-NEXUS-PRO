@@ -48,9 +48,7 @@ AI Nexus là một công cụ so sánh hiệu năng mạnh mẽ để đối chi
 Sau khi khởi chạy ứng dụng lần đầu tiên, vui lòng thực hiện các bước sau:
 
 1.  Nhấp vào biểu tượng **Cài đặt** (hình bánh răng ⚙️) ở góc trên bên phải.
-2.  Nhập các khóa API của bạn cho OpenAI và/hoặc DeepSeek vào các ô tương ứng.
+2.  Nhập các khóa API của bạn cho Google Gemini, OpenAI và/hoặc DeepSeek vào các ô tương ứng.
 3.  Nhấp vào **"Lưu thay đổi"**.
 
-**Lưu ý:** Các khóa API của bạn được lưu trữ an toàn ngay trên trình duyệt của bạn bằng `localStorage` và không bao giờ được gửi đi nơi khác. Các mô hình yêu cầu khóa API sẽ không hoạt động nếu không có khóa hợp lệ. Mô hình Gemini của Google đã được cấu hình sẵn.
-
-
+**Lưu ý:** Các khóa API của bạn được lưu trữ an toàn ngay trên trình duyệt của bạn bằng `localStorage` và không bao giờ được gửi đi nơi khác. Các mô hình yêu cầu khóa API sẽ không hoạt động nếu không có khóa hợp lệ.
