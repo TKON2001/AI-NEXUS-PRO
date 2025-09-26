@@ -2,6 +2,8 @@
 
 AI Nexus là một công cụ so sánh hiệu năng mạnh mẽ để đối chiếu phản hồi của các LLM cạnh nhau cùng với phân tích hiệu suất.
 
+**[Truy cập ứng dụng tại đây](https://ai-nexus-pro.vercel.app/)**
+
 ## Tính năng chính
 
 *   **So sánh song song:** Gửi một truy vấn đến nhiều mô hình (Gemini, GPT-4o, DeepSeek Coder) và xem kết quả trong thời gian thực.
@@ -10,45 +12,26 @@ AI Nexus là một công cụ so sánh hiệu năng mạnh mẽ để đối chi
 *   **Quản lý API Key:** Giao diện an toàn để bạn nhập và quản lý các khóa API của riêng mình (lưu trữ cục bộ trên trình duyệt).
 *   **Lịch sử & Xuất dữ liệu:** Tất cả các truy vấn đều được lưu lại và có thể được xuất ra file CSV để phân tích thêm.
 
-## Yêu cầu cài đặt
+## Hướng dẫn sử dụng
 
-Để chạy ứng dụng này trên máy của bạn, bạn cần cài đặt:
+Ứng dụng này là một trang web và không yêu cầu cài đặt. Chỉ cần làm theo các bước sau:
 
-*   [Node.js](https://nodejs.org/) (phiên bản 18.x trở lên được khuyến nghị)
-*   npm (thường được cài đặt sẵn cùng với Node.js)
+1.  **Cấu hình API Keys (Bắt buộc):**
+    *   Truy cập trang web và nhấp vào biểu tượng **Cài đặt** (hình bánh răng ⚙️) ở góc trên bên phải.
+    *   Nhập các khóa API của bạn cho **Google Gemini**, **OpenAI** và **DeepSeek** vào các ô tương ứng. Bạn phải cung cấp khóa của riêng mình để các mô hình hoạt động.
+    *   Nhấp vào **"Lưu thay đổi"**.
 
-## Hướng dẫn Cài đặt & Khởi chạy
+2.  **Chọn Mô hình & Gửi Truy vấn:**
+    *   Sử dụng các hộp kiểm để chọn những mô hình bạn muốn so sánh.
+    *   Nhập truy vấn của bạn vào ô văn bản và nhấn "Gửi".
 
-1.  **Tải mã nguồn:**
-    Tải và giải nén tệp ZIP của dự án này vào một thư mục trên máy tính của bạn.
+3.  **Phân tích và Đánh giá:**
+    *   Xem các phản hồi xuất hiện cạnh nhau cùng với các chỉ số hiệu suất (thời gian, chi phí, tokens).
+    *   Sử dụng thang điểm sao để **đánh giá chất lượng** của mỗi phản hồi. Việc đánh giá sẽ giúp hiển thị biểu đồ Radar so sánh trực quan.
 
-2.  **Mở Terminal (Dòng lệnh):**
-    Mở một cửa sổ terminal hoặc command prompt và điều hướng đến thư mục gốc của dự án bạn vừa giải nén.
-    ```bash
-    cd duong-dan-den-thu-muc-du-an
-    ```
+4.  **Xem lại Lịch sử:**
+    *   Nhấp vào nút "Lịch sử & Phân tích" để xem lại các truy vấn trước đây, sắp xếp kết quả và xuất dữ liệu ra file CSV.
 
-3.  **Cài đặt các gói phụ thuộc:**
-    Chạy lệnh sau để cài đặt tất cả các thư viện cần thiết cho dự án. Quá trình này có thể mất vài phút.
-    ```bash
-    npm install
-    ```
+## Lưu ý quan trọng về API Keys
 
-4.  **Khởi chạy ứng dụng:**
-    Sau khi cài đặt hoàn tất, chạy lệnh sau để khởi động máy chủ phát triển.
-    ```bash
-    npm run dev
-    ```
-
-5.  **Truy cập ứng dụng:**
-    Mở trình duyệt web của bạn và truy cập vào địa chỉ được hiển thị trong terminal (thường là `http://localhost:5173`).
-
-## Cấu hình
-
-Sau khi khởi chạy ứng dụng lần đầu tiên, vui lòng thực hiện các bước sau:
-
-1.  Nhấp vào biểu tượng **Cài đặt** (hình bánh răng ⚙️) ở góc trên bên phải.
-2.  Nhập các khóa API của bạn cho Google Gemini, OpenAI và/hoặc DeepSeek vào các ô tương ứng.
-3.  Nhấp vào **"Lưu thay đổi"**.
-
-**Lưu ý:** Các khóa API của bạn được lưu trữ an toàn ngay trên trình duyệt của bạn bằng `localStorage` và không bao giờ được gửi đi nơi khác. Các mô hình yêu cầu khóa API sẽ không hoạt động nếu không có khóa hợp lệ.
+Các khóa API của bạn được lưu trữ an toàn **chỉ trên trình duyệt của bạn** bằng `localStorage`. Chúng không bao giờ được gửi đến máy chủ của chúng tôi hay bất kỳ nơi nào khác. Bạn cần cung cấp khóa API của riêng mình để sử dụng các mô hình tương ứng.
