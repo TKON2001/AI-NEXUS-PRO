@@ -2,7 +2,7 @@
 
 AI Nexus là một công cụ so sánh hiệu năng mạnh mẽ để đối chiếu phản hồi của các LLM cạnh nhau cùng với phân tích hiệu suất.
 
-**[Truy cập ứng dụng tại đây](https://ai-nexus-pro.vercel.app/)**
+**[Truy cập ứng dụng tại đây](https://ai-nexus-pro-omega.vercel.app/)**
 
 ## Tính năng chính
 
