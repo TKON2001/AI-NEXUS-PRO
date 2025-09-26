@@ -1,0 +1,5 @@
+{
+  "name": " AI Nexus Pro",
+  "description": "Một công cụ so sánh hiệu năng mạnh mẽ để đối chiếu phản hồi của các LLM cạnh nhau cùng với phân tích hiệu suất. Tích hợp hệ thống định tuyến thông minh để tự động chọn mô hình tốt nhất cho một truy vấn dựa trên ưu tiên của người dùng như chi phí, tốc độ, hoặc chất lượng.",
+  "requestFramePermissions": []
+}
